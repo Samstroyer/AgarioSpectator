@@ -1,0 +1,12 @@
+h1 {
+    display: flex;
+    border: 3px black solid;
+    justify-content: center;
+    font-size: xx-large;
+}
+
+#canvasPlace {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
