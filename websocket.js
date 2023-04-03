@@ -1,6 +1,8 @@
-var players, playerLock = false;
-var food, foodLock = false;
-const ws = new WebSocket("ws://192.168.10.240:3000/snake");
+var players,
+  playerLock = false;
+var food,
+  foodLock = false;
+const ws = new WebSocket("ws://10.151.172.2:3000/snake");
 
 var radius = 1000;
 let canvas;
@@ -8,24 +10,24 @@ let canvas;
 // Connection opened
 ws.addEventListener("open", (event) => {
   console.log("Connected to server!");
-  ws.send(JSON.stringify({content:"GetFood", ID:"Spectator"}))
+  ws.send(JSON.stringify({ content: "GetFood", ID: "Spectator" }));
 });
 
 // Listen for messages
 ws.addEventListener("message", (event) => {
   let data = JSON.parse(event.data);
 
-  if(data.type == 2) {
-    while(playerLock) ;
+  if (data.type == 2) {
+    while (playerLock);
     playerLock = true;
     players = Object.values(JSON.parse(data.content));
     playerLock = false;
   }
-  if(data.type == 3) {
+  if (data.type == 3) {
     spectatingChef(data);
   }
-  if(data.type == 4) {
-    while(foodLock) ;
+  if (data.type == 4) {
+    while (foodLock);
     foodLock = true;
     food = Object.values(JSON.parse(data.content));
     foodLock = false;
@@ -33,25 +35,23 @@ ws.addEventListener("message", (event) => {
 });
 
 function spectatingChef(data) {
-
   let newFood = Object.values(JSON.parse(data.content));
 
-  while (foodLock) ;
+  while (foodLock);
   foodLock = true;
 
-  for(let i = 0; i < newFood.length; i++) {
+  for (let i = 0; i < newFood.length; i++) {
     food[newFood[i].index] = newFood[i].food;
   }
 
   food = Object.values(JSON.parse(data.content));
 
-
   foodLock = false;
 }
 
-function setup(){
+function setup() {
   canvas = createCanvas(1900, 800);
-  canvas.parent('canvasPlace');
+  canvas.parent("canvasPlace");
 }
 
 function draw() {
@@ -62,14 +62,14 @@ function draw() {
 function drawPlayers() {
   ellipseMode(CENTER);
 
-  for(let i = 0; i < food.length; i++) {
+  for (let i = 0; i < food.length; i++) {
     let x = map(food[i].x, -radius, radius, 0, width);
     let y = map(food[i].y, -radius, radius, 0, height);
 
     ellipse(x, y, 1, 1);
   }
 
-  for(let i = 0; i < players.length; i++) {
+  for (let i = 0; i < players.length; i++) {
     let x = map(players[i].x, -radius, radius, 0, width);
     let y = map(players[i].y, -radius, radius, 0, height);
 
